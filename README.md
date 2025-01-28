@@ -20,7 +20,7 @@ Sorry, there is currently no option to install using a package manager. For now,
 1. Ensure that Rust and Cargo are correctly installed on your system.
 2. Clone the Github repository.
 ```bash
-git clone https://github.com/kadirceliky/mpvy
+git clone https://github.com/kadircy/mpvy
 ```
 3. Navigate to the project directory:
 ```bash
