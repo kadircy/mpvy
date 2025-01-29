@@ -47,7 +47,12 @@ fn duration_to_seconds(duration: &str) -> u64 {
 fn clean_old_mp3_files() {
     let config = config::get_config();
     let mut count: usize = 15;
-    if config.is_ok() && config.clone().unwrap().contains_key(config::MAX_FILE_COUNT) {
+    if config.is_ok()
+        && config
+            .as_ref()
+            .unwrap()
+            .contains_key(config::MAX_FILE_COUNT)
+    {
         count = config.unwrap()[config::MAX_FILE_COUNT]
             .parse::<usize>()
             .unwrap();
@@ -189,15 +194,16 @@ fn main() {
         None
     };
 
+    let mut wait_duration: u64 = 0;
+
     for title in titles {
         info(
             "Mpvy TitleLoop",
-            &format!("Reached title: {}", title.trim()),
+            &format!("Reached title: '{}'", title.trim()),
         );
-        let video_info = service::play(title.trim()).unwrap();
+        let video_info = service::play(title.trim(), wait_duration).unwrap();
         let duration_in_seconds = duration_to_seconds(&video_info.duration);
-        info("Mpvy TitleLoop", "Waiting for audio to end.");
-        sleep(Duration::new(duration_in_seconds, 0));
+        wait_duration = duration_in_seconds;
     }
 
     // If there is a Cava process, kill it.

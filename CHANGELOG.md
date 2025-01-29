@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- Implemented preloading the next audio while the current audio is playing.
+
 ## [0.4.1] - 2025-01-29
 ### Changed
 
@@ -30,7 +34,7 @@
 
 - New feature: Support for **playlists** to play audios with a local list.
 - Introduced **cava** integration to display an audio visualizer during playback (use the `--cava` flag).
-- Implemented automatic logging of mpvy and **mpv** activities to `$XDG_CONFIG_HOME/mpvy/log/mpvy.log` and `$XDG_CONFIG_HOME/mpvy/log/mpv.log`.
+- Implemented automatic logging of **mpvy** and **mpv** activities to `$XDG_CONFIG_HOME/mpvy/log/mpvy.log` and `$XDG_CONFIG_HOME/mpvy/log/mpv.log`.
 - New feature: Support for **yt-dlp** to fetch YouTube video information and audio downloads.
 - Config file planned for future release at `$XDG_CONFIG_HOME/mpvy/config.toml`.
 
