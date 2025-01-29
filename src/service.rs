@@ -75,7 +75,9 @@ pub fn play(title: &str, duration: u64) -> Result<yt_dlp::VideoInfo, String> {
         );
         let seconds: Duration = Duration::from_secs(duration);
         // Wait for previous audio to end
+        info("Service Play", "Waiting for previous audio to end.");
         sleep(seconds);
+        info("Service Play", "Previous audio ended, playing next audio.");
         let result: Result<(), String> = mpv(&path);
         if result.is_err() {
             return Err(String::from(result.unwrap_err()));
