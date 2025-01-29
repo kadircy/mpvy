@@ -2,6 +2,29 @@
 
 ## [Unreleased]
 
+## [0.4.1] - 2025-01-29
+### Changed
+
+- Optimized variable types for enhanced performance.
+- Refined function argument types to improve readability and overall performance.
+
+## [0.3.1] - 2025-01-29
+### Added
+
+- New feature: **mpvy** now supports configuration via the `$XDG_CONFIG_HOME/mpvy/config.toml` file.
+- **New configuration options:**
+    - `max_file_count`: Control the maximum number of audio files stored on your system.    
+    - `audio_quality`: Select the desired audio quality, with `0` being the highest and `10` the lowest.
+    - `concurrent_fragments`: Adjust the concurrent fragment setting for yt-dlp.
+
+## Changed
+
+- Updated log messages to enhance clarity and user understanding.
+## Fixed
+
+- Increased code documentation with additional comment lines for better readability.
+- Improved variable types for better code integration, stability, and overall maintainability.
+
 ## [0.2.1] - 2025-01-29
 ### Added
 
