@@ -4,15 +4,10 @@ use std::process::Command;
 
 #[derive(Debug)]
 pub struct VideoInfo {
-    pub channel: String,  // Channel name
     pub duration: String, // Video duration
     pub title: String,    // Video title
     pub url: String,      // Video URL
     pub id: String,       // Video ID
-    pub likes: String,    // Number of likes
-    pub year: String,     // Release year
-    pub views: String,    // Number of views
-    pub ext: String,      // Video extension (e.g., mp4, mp3)
 }
 
 // Returns the download path for the video, defaults to $HOME/.config if config directory is unavailable
@@ -45,9 +40,9 @@ pub fn get_download_path() -> String {
 // It parses the yt-dlp output and returns a VideoInfo struct with relevant data
 pub fn get_info(query: &str) -> Result<VideoInfo, String> {
     let output = Command::new("yt-dlp")
-        .arg(format!("ytsearch:{}", query))  // Search query with yt-dlp
+        .arg(format!("ytsearch:{}", query)) // Search query with yt-dlp
         .arg("--print")
-        .arg("%(channel)s\n%(duration>%H:%M:%S)s\n%(title)s\n%(id)s\n%(webpage_url)s\n%(like_count)s\n%(release_year)s\n%(view_count)s\n%(ext)s")  // Specify the format to retrieve relevant information
+        .arg("%(duration>%H:%M:%S)s\n%(title)s\n%(id)s\n%(webpage_url)s") // Specify the format to retrieve relevant information
         .output();
 
     let output = match output {
@@ -80,7 +75,6 @@ pub fn get_info(query: &str) -> Result<VideoInfo, String> {
 
     // Parse the video details from the command output
     let mut lines = result.lines();
-    let channel = lines.next().unwrap_or_default().to_string();
     let duration = lines.next().unwrap_or_default().to_string();
     let title = lines.next().unwrap_or_default().to_string();
     let url = lines.next().unwrap_or_default().to_string();
@@ -91,21 +85,11 @@ pub fn get_info(query: &str) -> Result<VideoInfo, String> {
         .next()
         .unwrap_or_default()
         .to_string();
-    let likes = lines.next().unwrap_or_default().to_string();
-    let year = lines.next().unwrap_or_default().to_string();
-    let views = lines.next().unwrap_or_default().to_string();
-    let ext = lines.next().unwrap_or_default().to_string();
-
     Ok(VideoInfo {
-        channel,
         duration,
         title,
         url,
         id,
-        likes,
-        year,
-        views,
-        ext,
     })
 }
 
