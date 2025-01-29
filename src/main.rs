@@ -3,10 +3,7 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process::Command;
 use std::str::Split;
-use std::thread::sleep;
-use std::time::Duration;
 use std::{env, fs};
-
 pub mod config;
 pub mod log;
 pub mod playlist;
