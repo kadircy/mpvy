@@ -45,7 +45,17 @@ Running `mpvy` without arguments will prompt you for an input, allowing you to e
 **mpvy** has built-in support for displaying **cava** (a console-based audio visualizer) while playing audio. If you have **cava** installed on your system, you can use the `--cava` argument to automatically launch cava when the audio starts. Once all audio has finished playing, **cava** will be closed automatically.
 
 ## Configuration
-Currently, configuration options are not available in **mpvy**. However, we are planning to introduce a configuration file in the future. The configuration file will be located at `$XDG_CONFIG_HOME/mpvy/config.toml` (typically `~/.config/mpvy/config.toml`). This feature will be added soon, allowing users to customize their **mpvy** experience more easily. Stay tuned for future updates!
+This document provides an overview of the configuration options for the `mpvy` project.
+The configuration file located at `$XDG_CONFIG_DIR/mpvy/config.toml` (`~/.config/mpvy/config.toml`)
+
+### `max_file_count`
+Sets the maximum number of audio files to be saved. Default: `15`
+
+### `audio_quality`
+Defines the audio quality for downloads using `yt-dlp`. `0` is the best and `10` is the worst. Default: `0`
+
+### `concurrent_fragments`
+Specifies the number of concurrent fragments for downloading audio using `yt-dlp`. Default: `4`
 
 ## Logs
 You can access both **mpvy** and **mpv** logs in the `$XDG_CONFIG_HOME/mpvy/log` directory. Please note that these logs are overwritten from scratch with every **mpvy** command, so previous logs are deleted each time.
