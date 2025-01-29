@@ -5,6 +5,7 @@ use std::thread::sleep;
 use std::time::Duration;
 use std::{env, fs};
 
+pub mod config;
 pub mod log;
 pub mod playlist;
 pub mod service;
@@ -35,19 +36,31 @@ fn duration_to_seconds(duration: &str) -> u64 {
 }
 
 fn clean_old_mp3_files() {
+    let config = config::get_config();
+    let mut count = 15;
+    if config.is_ok() && config.clone().unwrap().contains_key(config::MAX_FILE_COUNT) {
+        count = config.unwrap()[config::MAX_FILE_COUNT]
+            .parse::<usize>()
+            .unwrap();
+    }
     info(
         "Mpvy CleanOldFiles".to_string(),
-        "Deleting old mp3 files to reach max count (15 files)".to_string(),
+        format!(
+            "Deleting old mp3 files to reach max count ({} files)",
+            count
+        ),
     );
     let mp3_dir = dirs::config_dir().unwrap().join("mpvy/mp3");
     if !mp3_dir.exists() {
         return;
     }
+    // Collect all files in directory
     let mut files = fs::read_dir(mp3_dir)
         .unwrap()
         .filter_map(|entry| entry.ok())
         .filter(|e| e.file_type().unwrap().is_file())
         .collect::<Vec<_>>();
+    // Sort files by their last modified date
     files.sort_by(|a, b| {
         a.metadata()
             .unwrap()
@@ -55,8 +68,8 @@ fn clean_old_mp3_files() {
             .unwrap()
             .cmp(&b.metadata().unwrap().modified().unwrap())
     });
-    if files.len() > 15 {
-        let files_to_remove = files.len() - 15;
+    if files.len() > count {
+        let files_to_remove = files.len() - count;
         for file in files.iter().take(files_to_remove) {
             info(
                 "Mpvy CleanOldFiles".to_string(),
@@ -73,10 +86,6 @@ fn clean_old_mp3_files() {
 }
 
 fn clean_log_files() {
-    info(
-        "Mpvy CleanLogFiles".to_string(),
-        "Deleting old log files".to_string(),
-    );
     let log_dir = dirs::config_dir().unwrap().join("mpvy/log");
     if !log_dir.exists() {
         return;
@@ -89,6 +98,11 @@ fn clean_log_files() {
     if mpvy_log_path.exists() {
         File::create(mpvy_log_path).unwrap();
     }
+
+    info(
+        "Mpvy CleanLogFiles".to_string(),
+        "Old log files deleted.".to_string(),
+    );
 }
 
 fn main() {
@@ -117,6 +131,7 @@ fn main() {
             .read_line(&mut input)
             .expect("Failed to read user input from terminal");
     } else {
+        // If there is some playlist to play, read it content and write it to the input for playing.
         let playlist_content = playlist::read_playlist(playlist.unwrap());
         if playlist_content.is_err() {
             error("Mpvy PlaylistCheck".to_string(), "Playlist Content returned an Err value. Exiting with code 1 because nothing to play.".to_string());
@@ -126,6 +141,7 @@ fn main() {
         input = playlist_content.unwrap();
     }
 
+    // If there is some playlist to save, write it to the file.
     if let Some(playlist_name) = save_playlist {
         let result = playlist::write_playlist(&playlist_name, input.trim().to_string());
 
@@ -182,6 +198,7 @@ fn main() {
         sleep(Duration::new(duration_in_seconds, 0));
     }
 
+    // If there is a Cava process, kill it.
     if let Some(mut cava) = cava_process {
         if let Err(e) = cava.kill() {
             error(
