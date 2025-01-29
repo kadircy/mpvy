@@ -28,7 +28,10 @@ pub fn read_playlist(name: &str) -> Result<String, String> {
     if content.is_err() {
         error(
             "Playlist Read",
-            &format!("An error occured while reading contents of file: '{}'", &path),
+            &format!(
+                "An error occured while reading contents of file: '{}'",
+                &path
+            ),
         );
         return Err("Unexpected error while reading file contents.".to_string());
     }
