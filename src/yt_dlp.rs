@@ -29,8 +29,8 @@ pub fn get_download_path() -> String {
     let dotconfig = dirs::config_dir();
     if dotconfig.is_none() {
         warning(
-            "YoutubeDLP DownloadPath".to_string(),
-            "Unable to get user config directory. Using $HOME/.config".to_string(),
+            "YoutubeDLP DownloadPath",
+            "Unable to get user config directory. Using $HOME/.config",
         );
     }
     let path = format!(
@@ -63,8 +63,8 @@ pub fn get_info(query: &str) -> Result<VideoInfo, String> {
         Ok(o) => o,
         Err(_) => {
             error(
-                "YoutubeDLP Info".to_string(),
-                "An error occurred while executing 'yt-dlp'.".to_string(),
+                "YoutubeDLP Info",
+                "An error occurred while executing 'yt-dlp'.",
             );
             return Err("Failed to execute 'yt-dlp'.".to_string());
         }
@@ -72,8 +72,8 @@ pub fn get_info(query: &str) -> Result<VideoInfo, String> {
 
     if output.status.success() == false {
         error(
-            "YoutubeDLP Info".to_string(),
-            "Unable to get successful output. Maybe 'yt-dlp' is not installed?".to_string(),
+            "YoutubeDLP Info",
+            "Unable to get successful output. Maybe 'yt-dlp' is not installed?",
         );
         return Err(String::from_utf8_lossy(&output.stderr).to_string());
     }
@@ -81,8 +81,8 @@ pub fn get_info(query: &str) -> Result<VideoInfo, String> {
     let result: String = String::from_utf8_lossy(&output.stdout).trim().to_string();
     if result.is_empty() {
         info(
-            "YoutubeDLP Info".to_string(),
-            "The query result is empty. Unable to find video on YouTube.".to_string(),
+            "YoutubeDLP Info",
+            "The query result is empty. Unable to find video on YouTube.",
         );
         return Err("Unable to find video on YouTube.".to_string());
     }
@@ -131,8 +131,8 @@ pub fn download(url: &String) -> Result<(), String> {
     };
 
     info(
-        "YoutubeDLP Download".to_string(),
-        format!("Requested a download with url: {}", &url).to_string(),
+        "YoutubeDLP Download",
+        &format!("Requested a download with url: {}", &url),
     );
 
     let path: String = get_download_path();
@@ -157,8 +157,8 @@ pub fn download(url: &String) -> Result<(), String> {
         Ok(o) => o,
         Err(_) => {
             error(
-                "YoutubeDLP Download".to_string(),
-                "An error occurred while executing 'yt-dlp'".to_string(),
+                "YoutubeDLP Download",
+                "An error occurred while executing 'yt-dlp'",
             );
             return Err("Failed to execute 'yt-dlp'".to_string());
         }
@@ -166,15 +166,12 @@ pub fn download(url: &String) -> Result<(), String> {
 
     if output.status.success() == false {
         error(
-            "YoutubeDLP Download".to_string(),
-            "Unable to download video successfully. Maybe 'yt-dlp' is not installed?".to_string(),
+            "YoutubeDLP Download",
+            "Unable to download video successfully. Maybe 'yt-dlp' is not installed?",
         );
         return Err(String::from_utf8_lossy(&output.stderr).to_string());
     }
 
-    info(
-        "YoutubeDLP Download".to_string(),
-        "Video Downloaded successfully".to_string(),
-    );
+    info("YoutubeDLP Download", "Video Downloaded successfully");
     return Ok(());
 }

@@ -20,21 +20,21 @@ fn write_log(level: &str, module: &str, message: &str) -> Result<()> {
 }
 
 /// Log an error message for a given module
-pub fn error(module: String, message: String) {
+pub fn error(module: &str, message: &str) {
     if let Err(e) = write_log("ERROR", &module, &message) {
         eprintln!("Failed to write error log: {}", e);
     }
 }
 
 /// Log a warning message for a given module
-pub fn warning(module: String, message: String) {
+pub fn warning(module: &str, message: &str) {
     if let Err(e) = write_log("WARNING", &module, &message) {
         eprintln!("Failed to write warning log: {}", e);
     }
 }
 
 /// Log an informational message for a given module
-pub fn info(module: String, message: String) {
+pub fn info(module: &str, message: &str) {
     if let Err(e) = write_log("INFO", &module, &message) {
         eprintln!("Failed to write info log: {}", e);
     }

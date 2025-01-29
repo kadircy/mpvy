@@ -1,6 +1,6 @@
 [package]
 name = "mpvy"
-version = "0.3.1"
+version = "0.4.1"
 description = "Youtube audio player based on mpv"
 repository = "https://github.com/kadircy/mpvy"
 license = "MIT"

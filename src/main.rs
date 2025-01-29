@@ -53,8 +53,8 @@ fn clean_old_mp3_files() {
             .unwrap();
     }
     info(
-        "Mpvy CleanOldFiles".to_string(),
-        format!(
+        "Mpvy CleanOldFiles",
+        &format!(
             "Deleting old mp3 files to reach max count ({} files)",
             count
         ),
@@ -81,13 +81,13 @@ fn clean_old_mp3_files() {
         let files_to_remove: usize = files.len() - count;
         for file in files.iter().take(files_to_remove) {
             info(
-                "Mpvy CleanOldFiles".to_string(),
-                format!("Deleting file: {}", file.path().display()),
+                "Mpvy CleanOldFiles",
+                &format!("Deleting file: {}", file.path().display()),
             );
             fs::remove_file(file.path()).unwrap_or_else(|e| {
                 error(
-                    "Mpvy CleanOldFiles".to_string(),
-                    format!("Failed to delete file {}: {}", file.path().display(), e),
+                    "Mpvy CleanOldFiles",
+                    &format!("Failed to delete file {}: {}", file.path().display(), e),
                 );
             });
         }
@@ -111,10 +111,7 @@ fn clean_log_files() {
         File::create(mpvy_log_path).unwrap();
     }
 
-    info(
-        "Mpvy CleanLogFiles".to_string(),
-        "Old log files deleted.".to_string(),
-    );
+    info("Mpvy CleanLogFiles", "Old log files deleted.");
 }
 
 fn main() {
@@ -132,7 +129,7 @@ fn main() {
     clean_log_files();
     clean_old_mp3_files();
     clear_console();
-    info("Mpvy Main".to_string(), "Getting user input".to_string());
+    info("Mpvy Main", "Getting user input");
 
     let mut input: String = String::new();
 
@@ -144,9 +141,9 @@ fn main() {
             .expect("Failed to read user input from terminal");
     } else {
         // If there is some playlist to play, read it content and write it to the input for playing.
-        let playlist_content: Result<String, String> = playlist::read_playlist(playlist.unwrap());
+        let playlist_content: Result<String, String> = playlist::read_playlist(&playlist.unwrap());
         if playlist_content.is_err() {
-            error("Mpvy PlaylistCheck".to_string(), "Playlist Content returned an Err value. Exiting with code 1 because nothing to play.".to_string());
+            error("Mpvy PlaylistCheck", "Playlist Content returned an Err value. Exiting with code 1 because nothing to play.");
             println!("Playlist not found (or another error occured). Please check logs for more information.");
             std::process::exit(1);
         }
@@ -160,24 +157,21 @@ fn main() {
 
         if result.is_err() {
             error(
-                "Mpvy PlaylistCheck".to_string(),
-                "An error occured while writing content to playlist file.".to_string(),
+                "Mpvy PlaylistCheck",
+                "An error occured while writing content to playlist file.",
             );
         }
 
         info(
-            "Mpvy SavePlaylist".to_string(),
-            format!("Playlist saved as: {}", playlist_name),
+            "Mpvy SavePlaylist",
+            &format!("Playlist saved as: {}", playlist_name),
         );
     }
 
     clear_console();
 
     if input.trim().is_empty() {
-        info(
-            "Mpvy Main".to_string(),
-            "User input is empty. Exiting with code 0.".to_string(),
-        );
+        info("Mpvy Main", "User input is empty. Exiting with code 0.");
         println!("An empty input given. Exiting with code 0.");
         std::process::exit(0);
     }
@@ -185,10 +179,7 @@ fn main() {
     // Split querys with commas
     let titles: Split<'_, &str> = input.trim().split(",");
     let cava_process: Option<std::process::Child> = if cava_enabled {
-        info(
-            "Mpvy Cava".to_string(),
-            "Cava is enabled. Starting child process".to_string(),
-        );
+        info("Mpvy Cava", "Cava is enabled. Starting child process");
         Some(
             Command::new("cava")
                 .spawn()
@@ -200,30 +191,21 @@ fn main() {
 
     for title in titles {
         info(
-            "Mpvy TitleLoop".to_string(),
-            format!("Reached title: {}", title.trim()),
+            "Mpvy TitleLoop",
+            &format!("Reached title: {}", title.trim()),
         );
         let video_info = service::play(title.trim()).unwrap();
         let duration_in_seconds = duration_to_seconds(&video_info.duration);
-        info(
-            "Mpvy TitleLoop".to_string(),
-            "Waiting for audio to end.".to_string(),
-        );
+        info("Mpvy TitleLoop", "Waiting for audio to end.");
         sleep(Duration::new(duration_in_seconds, 0));
     }
 
     // If there is a Cava process, kill it.
     if let Some(mut cava) = cava_process {
         if let Err(e) = cava.kill() {
-            error(
-                "Mpvy Cava".to_string(),
-                format!("Failed to kill 'cava': {}", e),
-            );
+            error("Mpvy Cava", &format!("Failed to kill 'cava': {}", e));
         } else {
-            info(
-                "Mpvy Cava".to_string(),
-                "Cava process terminated".to_string(),
-            );
+            info("Mpvy Cava", "Cava process terminated");
         }
     }
 }

@@ -34,8 +34,8 @@ pub fn mpv(path: &str) -> Result<(), String> {
 
     if command.is_err() {
         error(
-            "Service Mpv".to_string(),
-            "Unable to play video with mpv. Maybe mpv is not downloaded?".to_string(),
+            "Service Mpv",
+            "Unable to play video with mpv. Maybe mpv is not downloaded?",
         );
         return Err(command.unwrap_err().to_string());
     }
@@ -47,18 +47,15 @@ pub fn mpv(path: &str) -> Result<(), String> {
 /// And logs informative messages
 pub fn play(title: &str) -> Result<yt_dlp::VideoInfo, String> {
     info(
-        "Service Play".to_string(),
-        format!("Requested a play with query '{}'", title).to_string(),
+        "Service Play",
+        &format!("Requested a play with query '{}'", title),
     );
 
     let video_result: Result<yt_dlp::VideoInfo, String> = yt_dlp::get_info(title); // Get video information (such as duration, title, id)
     let video: VideoInfo = match video_result {
         Ok(info) => info,
         Err(err) => {
-            error(
-                "Service Play".to_string(),
-                "Unable to get video info".to_string(),
-            );
+            error("Service Play", "Unable to get video info");
             return Err(err.to_string());
         }
     };
@@ -82,10 +79,7 @@ pub fn play(title: &str) -> Result<yt_dlp::VideoInfo, String> {
     // If the video is not downloaded, download it first
     let output: Result<(), String> = yt_dlp::download(&video.id);
     if output.is_err() {
-        error(
-            "Service Play".to_string(),
-            "Unable to download video".to_string(),
-        );
+        error("Service Play", "Unable to download video");
         return Err(output.unwrap_err().to_string());
     }
 

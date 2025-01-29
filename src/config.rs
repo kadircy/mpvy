@@ -24,9 +24,8 @@ pub fn get_config() -> Result<HashMap<String, String>, String> {
 
         if result.is_err() {
             error(
-                "Mpvy Config".to_string(),
-                "Unable to write empty configuration file. Please create the file manually."
-                    .to_string(),
+                "Mpvy Config",
+                "Unable to write empty configuration file. Please create the file manually.",
             );
             return Err("Unable to write empty configuration file".to_string());
         }
@@ -43,8 +42,8 @@ pub fn get_config() -> Result<HashMap<String, String>, String> {
 
     if result.is_err() {
         error(
-            "Mpvy Config".to_string(),
-            "An error occured while converting config into an HashMap".to_string(),
+            "Mpvy Config",
+            "An error occured while converting config into an HashMap",
         );
         return Err("Unable to convert config into an HashMap".to_string());
     }
