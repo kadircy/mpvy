@@ -30,7 +30,7 @@ pub fn get_download_path() -> String {
     if dotconfig.is_none() {
         warning(
             "YoutubeDLP DownloadPath",
-            "Unable to get user config directory. Using $HOME/.config",
+            "Unable to get user config directory. Using $HOME/.config.",
         );
     }
     let path = format!(
@@ -40,7 +40,7 @@ pub fn get_download_path() -> String {
                 format!(
                     "{}/.config",
                     std::env::var("HOME")
-                        .expect("!!! FATAL ERROR !!! Unable to get $HOME variable. It is missing.")
+                        .expect("Unexpected Error: Unable to get $HOME environment variable.")
                 )
                 .into()
             )
@@ -82,9 +82,9 @@ pub fn get_info(query: &str) -> Result<VideoInfo, String> {
     if result.is_empty() {
         info(
             "YoutubeDLP Info",
-            "The query result is empty. Unable to find video on YouTube.",
+            "The query result is empty. Unable to find audio on YouTube.",
         );
-        return Err("Unable to find video on YouTube.".to_string());
+        return Err("Unable to find audio on YouTube.".to_string());
     }
 
     let mut lines: Lines<'_> = result.lines();
@@ -113,14 +113,14 @@ pub fn download(url: &String) -> Result<(), String> {
     let mut concurrent_fragments: String = "4".to_string();
 
     if config.is_ok() {
-        if config.clone().unwrap().contains_key(config::AUDIO_QUALITY) {
+        if config.as_ref().unwrap().contains_key(config::AUDIO_QUALITY) {
             quality = config.clone().unwrap()[config::AUDIO_QUALITY]
                 .parse::<String>()
                 .unwrap();
         }
 
         if config
-            .clone()
+            .as_ref()
             .unwrap()
             .contains_key(config::CONCURRENT_FRAGMENTS)
         {
@@ -132,7 +132,7 @@ pub fn download(url: &String) -> Result<(), String> {
 
     info(
         "YoutubeDLP Download",
-        &format!("Requested a download with url: {}", &url),
+        &format!("Downloading audio: '{}'.", &url),
     );
 
     let path: String = get_download_path();
@@ -158,20 +158,20 @@ pub fn download(url: &String) -> Result<(), String> {
         Err(_) => {
             error(
                 "YoutubeDLP Download",
-                "An error occurred while executing 'yt-dlp'",
+                "An error occurred while executing 'yt-dlp'.",
             );
-            return Err("Failed to execute 'yt-dlp'".to_string());
+            return Err("Failed to execute 'yt-dlp'.".to_string());
         }
     };
 
     if output.status.success() == false {
         error(
             "YoutubeDLP Download",
-            "Unable to download video successfully. Maybe 'yt-dlp' is not installed?",
+            "Unable to download audio successfully. Maybe 'yt-dlp' is not installed?",
         );
         return Err(String::from_utf8_lossy(&output.stderr).to_string());
     }
 
-    info("YoutubeDLP Download", "Video Downloaded successfully");
+    info("YoutubeDLP Download", "Audio downloaded successfully.");
     return Ok(());
 }

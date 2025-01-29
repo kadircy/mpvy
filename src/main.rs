@@ -60,7 +60,7 @@ fn clean_old_mp3_files() {
     info(
         "Mpvy CleanOldFiles",
         &format!(
-            "Deleting old mp3 files to reach max count ({} files)",
+            "Deleting old audio files to reach max count ({} files).",
             count
         ),
     );
@@ -87,12 +87,12 @@ fn clean_old_mp3_files() {
         for file in files.iter().take(files_to_remove) {
             info(
                 "Mpvy CleanOldFiles",
-                &format!("Deleting file: {}", file.path().display()),
+                &format!("Deleting file: '{}'.", file.path().display()),
             );
             fs::remove_file(file.path()).unwrap_or_else(|e| {
                 error(
                     "Mpvy CleanOldFiles",
-                    &format!("Failed to delete file {}: {}", file.path().display(), e),
+                    &format!("Failed to delete file '{}': {}", file.path().display(), e),
                 );
             });
         }
@@ -134,7 +134,7 @@ fn main() {
     clean_log_files();
     clean_old_mp3_files();
     clear_console();
-    info("Mpvy Main", "Getting user input");
+    info("Mpvy Main", "Getting input for queries.");
 
     let mut input: String = String::new();
 
@@ -169,7 +169,7 @@ fn main() {
 
         info(
             "Mpvy SavePlaylist",
-            &format!("Playlist saved as: {}", playlist_name),
+            &format!("Playlist saved as: '{}'.", playlist_name),
         );
     }
 
@@ -184,7 +184,7 @@ fn main() {
     // Split querys with commas
     let titles: Split<'_, &str> = input.trim().split(",");
     let cava_process: Option<std::process::Child> = if cava_enabled {
-        info("Mpvy Cava", "Cava is enabled. Starting child process");
+        info("Mpvy Cava", "Cava is enabled. Starting child process.");
         Some(
             Command::new("cava")
                 .spawn()
@@ -199,7 +199,7 @@ fn main() {
     for title in titles {
         info(
             "Mpvy TitleLoop",
-            &format!("Reached title: '{}'", title.trim()),
+            &format!("Reached query in loop: '{}'.", title.trim()),
         );
         let video_info = service::play(title.trim(), wait_duration).unwrap();
         let duration_in_seconds = duration_to_seconds(&video_info.duration);
@@ -211,7 +211,10 @@ fn main() {
         if let Err(e) = cava.kill() {
             error("Mpvy Cava", &format!("Failed to kill 'cava': {}", e));
         } else {
-            info("Mpvy Cava", "Cava process terminated");
+            info("Mpvy Cava", "Cava process terminated.");
         }
     }
+
+    info("Mpvy Main", "Reached end of file. Exiting with code 0.");
+    std::process::exit(0);
 }

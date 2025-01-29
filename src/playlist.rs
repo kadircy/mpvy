@@ -17,13 +17,10 @@ pub fn playlist_path(name: &str) -> String {
 pub fn read_playlist(name: &str) -> Result<String, String> {
     let path: String = playlist_path(name);
     // Check if the playlist file exists
-    // ? Why we don't exit when unable to find playlist
-    // Because we need more logging on main, mpvy does this on main.
-    // NOTE: Consider moving exit(1) to here.
     if fs::exists(&path).unwrap_or(false) == false {
         error(
             "Playlist Read",
-            &format!("Unable to find playlist with name: {}", name),
+            &format!("Unable to find playlist with name: '{}'", name),
         );
         return Err("Invalid path or playlist name".to_string());
     }
@@ -31,7 +28,7 @@ pub fn read_playlist(name: &str) -> Result<String, String> {
     if content.is_err() {
         error(
             "Playlist Read",
-            &format!("An error occured while reading contents of file: {}", &path),
+            &format!("An error occured while reading contents of file: '{}'", &path),
         );
         return Err("Unexpected error while reading file contents.".to_string());
     }

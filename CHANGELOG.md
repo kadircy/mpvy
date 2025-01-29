@@ -1,10 +1,13 @@
 # Changelog
 
 ## [Unreleased]
-
 ### Added
 
 - Implemented preloading the next audio while the current audio is playing.
+
+### Changed
+
+- Updated log messages to enhance clarity and user understanding.
 
 ## [0.4.1] - 2025-01-29
 ### Changed
@@ -24,6 +27,7 @@
 ## Changed
 
 - Updated log messages to enhance clarity and user understanding.
+
 ## Fixed
 
 - Increased code documentation with additional comment lines for better readability.
