@@ -1,14 +1,14 @@
+pub mod config;
+pub mod log;
+pub mod playlist;
+pub mod service;
+pub mod yt_dlp;
 use std::fs::File;
 use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process::Command;
 use std::str::Split;
 use std::{env, fs};
-pub mod config;
-pub mod log;
-pub mod playlist;
-pub mod service;
-pub mod yt_dlp;
 use crate::log::*;
 
 /// Clear the console with some unicode char.
@@ -182,11 +182,9 @@ fn main() {
     let titles: Split<'_, &str> = input.trim().split(",");
     let cava_process: Option<std::process::Child> = if cava_enabled {
         info("Mpvy Cava", "Cava is enabled. Starting child process.");
-        Some(
-            Command::new("cava")
-                .spawn()
-                .expect("Unexpected Error: Failed to start 'cava' process. Maybe 'cava' is not installed?"),
-        )
+        Some(Command::new("cava").spawn().expect(
+            "Unexpected Error: Failed to start 'cava' process. Maybe 'cava' is not installed?",
+        ))
     } else {
         None
     };
