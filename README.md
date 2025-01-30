@@ -1,151 +1,71 @@
 # mpvy
 
-**MPVY** is an open-source, lightweight, and terminal-based YouTube audio player, developed using the power of Rust programming language. Designed to offer a fast and customizable listening experience, MPVY leverages the MPV media player to seamlessly stream YouTube content as audio, supporting a variety of media formats. Whether you're an audiophile or a user seeking minimalistic, efficient tools, MPVY provides a user-friendly solution for enjoying YouTube audio directly from the terminal.
+https://github.com/user-attachments/assets/7544f0a6-da32-43aa-b4da-0eb10c2a0d2d
 
-## Key Features
-
-- **Lightweight & Efficient**: Built for performance, MPVY is designed to use minimal resources while delivering high-quality audio.
-- **Terminal-based**: Operates entirely in the terminal, perfect for users who prefer a text-based interface or minimalistic setups.
-- **Customizable**: Fully configurable to suit individual preferences, from audio quality to playlist management.
-- **Supports CAVA Visualizer**: Add a console-based audio visualizer (CAVA) to enhance your listening experience.
-- **Playlist Management**: Save and load playlists to effortlessly listen to your favorite tracks without needing to input queries repeatedly.
-- **Easy Integration with MPV & yt-dlp**: By utilizing MPV and yt-dlp, MPVY ensures a smooth and reliable audio playback experience.
+MPVY is a free and open-source terminal-based YouTube audio player written in Rust. It leverages the MPV media player to stream YouTube content as audio, supporting a wide range of media formats and providing a fast, lightweight, and customizable experience for users.
 
 ## Installation
 
-To run **MPVY**, you need to install `MPV`, `yt-dlp`, and then build MPVY from source.
+You can run the binary with `mpvy`.
+Also you need to download `mpv` and `yt-dlp` for running **mpvy** correctly.
 
-### Prerequisites
+### With package manager
 
-1. **Install MPV**: Make sure MPV is installed on your system. If you haven't already, refer to [MPV’s installation guide](https://mpv.io/).
-2. **Install yt-dlp**: **yt-dlp** is a powerful downloader and extractor that MPVY uses for downloading YouTube audio. Install it by following the instructions on the [yt-dlp GitHub page](https://github.com/yt-dlp/yt-dlp).
+Sorry, there is currently no option to install using a package manager. For now, please install MPVY from source or download the latest release from GitHub.
 
-### Building MPVY from Source
+### Manually
 
-1. **Install Rust and Cargo**: Ensure Rust and Cargo are installed on your system. If you haven't installed them yet, visit [Rust’s installation page](https://www.rust-lang.org/tools/install).
-   
-2. **Clone the Repository**:
-   ```
-   git clone https://github.com/kadircy/mpvy
-   ``` 
+1. Ensure that Rust and Cargo are correctly installed on your system.
+2. Clone the Github repository.
+```bash
+git clone https://github.com/kadircy/mpvy
+```
+3. Navigate to the project directory:
+```bash
+cd mpvy
+```
+4. Compile the release binary:
+```bash
+cargo build --release
+```
 
-3. **Navigate to the Project Directory**:
-   ```
-   cd mpvy
-   ```
-
-4. **Build the Release Binary**:
-   ```
-   cargo build --release
-   ```
-
-5. **Run MPVY**: Now that you've compiled the binary, you can run MPVY with:
-   ```
-   ./target/release/mpvy
-   ```
-
-### Running MPVY
-
-Simply run `mpvy` without any arguments, and the program will prompt you for a YouTube search query. You can enter multiple queries separated by commas. MPVY will then search, download, and play the audio for you using MPV. You can also interact with playback via IPC for additional control.
+You can now run the binary with: `./target/release/mpvy`
 
 ## Usage
+The binary is named `mpvy`
 
-### Basic Search and Playback
+Running `mpvy` without arguments will prompt you for an input, allowing you to enter search queries for YouTube. You can search for multiple queries at once by separating them with commas. After that, **mpvy** will search for the videos and download them to your local machine (if they are not already installed). Next, **mpvy** will use `yt-dlp` to fetch video information and download the audio. It will then automatically launch **mpv** with the necessary arguments to play the audio correctly. Finally, you will hear the audio system-wide.
 
-1. Launch the terminal and run:
-   ```
-   mpvy
-   ```
+**mpvy** currently doesn't support built-in controls like play, pause, and others. However, you can manage audio playback **customly** using IPC. **mpvy** automatically sets the IPC socket path for the played audio to `$XDG_CONFIG_HOME/mpv/socket`. To control the audio in **mpvy** (mpv instances that running audios), simply interact with this IPC socket path.
 
-2. Enter one or more YouTube search queries, separated by commas. MPVY will:
-   - Search for the videos on YouTube.
-   - Download them to your local machine (if they aren't already cached).
-   - Fetch the audio using yt-dlp and launch MPV to play it.
+## Playlist
+**mpvy** now supports local playlists, allowing you to play multiple audio tracks repeatedly without having to enter the query each time. To save a playlist, use the `--save-playlist <name>` argument and enter your video queries as usual. **mpvy** will store these queries in a file located at `$XDG_CONFIG_HOME/mpvy/playlist/<name>`. To play a saved playlist, simply use the `--playlist <name>` argument, and **mpvy** will handle playback seamlessly.
 
-Once the audio is playing, you can enjoy it across your system as MPV streams the content.
-
-### Playlist Management
-
-MPVY supports creating and playing local playlists. This feature allows you to curate and enjoy your favorite tracks in sequence, without re-entering search queries each time.
-
-- **Save a Playlist**: Use the `--save-playlist <name>` option to save a playlist of your audio search queries:
-   ```
-   mpvy --save-playlist my_playlist
-   ```
-   This will store your queries in `$XDG_CONFIG_HOME/mpvy/playlist/my_playlist`.
-
-- **Play a Saved Playlist**: To play a saved playlist, simply use:
-   ```
-   mpvy --playlist my_playlist
-   ```
-
-### Visualizer Support (CAVA)
-
-For a more immersive experience, **MPVY** supports CAVA, a console-based audio visualizer. If you have CAVA installed, you can use the `--cava` flag to launch it automatically while your audio is playing:
-   ```
-   mpvy --cava
-   ```
-Once the audio finishes, CAVA will automatically close.
+## Cava
+**mpvy** has built-in support for displaying **cava** (a console-based audio visualizer) while playing audio. If you have **cava** installed on your system, you can use the `--cava` argument to automatically launch cava when the audio starts. Once all audio has finished playing, **cava** will be closed automatically.
 
 ## Configuration
+This document provides an overview of the configuration options for the `mpvy` project.
+The configuration file located at `$XDG_CONFIG_DIR/mpvy/config.toml` (`~/.config/mpvy/config.toml`)
 
-### Configuration File
+### `max_file_count`
+Sets the maximum number of audio files to be saved. Default: `15`
 
-MPVY uses a configuration file for managing various settings. The config file is located at `$XDG_CONFIG_HOME/mpvy/config.toml` (typically `~/.config/mpvy/config.toml`). Below are some key configurable options:
+### `audio_quality`
+Defines the audio quality for downloads using `yt-dlp`. `0` is the best and `10` is the worst. Default: `0`
 
-- **`max_file_count`**: Set the maximum number of audio files to save on your system.
-   - Default: `15`
-   - Example:
-     ```
-     max_file_count = 15
-     ```
+### `concurrent_fragments`
+Specifies the number of concurrent fragments for downloading audio using `yt-dlp`. Default: `4`
 
-- **`audio_quality`**: Define the audio quality for downloads (lower values provide higher quality).
-   - Default: `0` (best quality).
-   - Example:
-     ```
-     audio_quality = 0
-     ```
-
-- **`concurrent_fragments`**: Set the number of concurrent fragments for downloading audio using `yt-dlp`.
-   - Default: `4`
-   - Example:
-     ```
-     concurrent_fragments = 4
-     ```
-
-### IPC (Inter-Process Communication)
-
-MPVY allows interaction with MPV instances using IPC sockets, making it possible to control the audio playback programmatically. By default, MPVY sets the IPC socket path to:
-   ```
-   $XDG_CONFIG_HOME/mpv/socket
-   ```
-To control audio playback, simply interact with this socket. You can use MPV's IPC commands to control actions like play, pause, volume adjustment, etc.
-
-### Logs
-
-MPVY stores logs for both the MPVY program and the MPV media player at the following location:
-   ```
-   $XDG_CONFIG_HOME/mpvy/log
-   ```
-Please note that the logs are overwritten with each command execution, so previous logs will be deleted each time the application is run.
+## Logs
+You can access both **mpvy** and **mpv** logs in the `$XDG_CONFIG_HOME/mpvy/log` directory. Please note that these logs are overwritten from scratch with every **mpvy** command, so previous logs are deleted each time.
 
 ## Contributing
 
-Contributions to **MPVY** are welcome and highly appreciated! If you'd like to contribute, please follow the steps below:
-
-1. **Fork the repository**.
-2. **Create a new branch** for your changes.
-3. **Make your changes**, ensuring that you follow the existing coding style. Run `cargo fmt` to format your code.
-4. **Run tests** (if applicable).
-5. **Submit a pull request** with a clear description of your changes.
-
-If you encounter bugs or have feature suggestions, feel free to open an issue. We appreciate all contributions and feedback!
+Contributions to **mpvy** are welcome and appreciated! If you'd like to contribute, please fork the repository, make your changes, and submit a pull request. Before submitting, ensure your code adheres to the existing style (run `cargo fmt` and resolve any warnings) and includes any necessary tests. If you encounter bugs or have feature suggestions, feel free to open an issue. Thank you for your support!
 
 ## Changelog
-
-For a detailed list of changes, updates, and version history, please refer to the [CHANGELOG](./CHANGELOG.md) page.
+For more details on updates and changes, please refer to the [CHANGELOG](./CHANGELOG.md) page.
 
 ## License
-
 This project is licensed under the **MIT License**. For more details, please refer to the [LICENSE](./LICENSE) page.
