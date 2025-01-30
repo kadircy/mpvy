@@ -3,13 +3,13 @@ pub mod log;
 pub mod playlist;
 pub mod service;
 pub mod yt_dlp;
+use crate::log::*;
 use std::fs::File;
 use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process::Command;
 use std::str::Split;
 use std::{env, fs};
-use crate::log::*;
 
 /// Clear the console with some unicode char.
 fn clear_console() {
@@ -118,10 +118,6 @@ fn clean_log_files() {
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let playlist: Option<String> = args
-        .iter()
-        .position(|arg| arg == "--playlist")
-        .and_then(|i| args.get(i + 1).map(|s| s.to_string()));
     let cava_enabled: bool = args.contains(&"--cava".to_string());
     let save_playlist: Option<String> = args
         .iter()
@@ -133,24 +129,28 @@ fn main() {
     clear_console();
     info("Mpvy Main", "Getting input for queries.");
 
+    let playlists: Result<Vec<String>, String> = playlist::get_playlists();
+
+    if playlists.is_err() {
+        error(
+            "Mpvy Playlists",
+            "'get_playlists' returned an Err value. Don't showing playlists.",
+        )
+    } else {
+        println!("---Playlists----------------------------");
+        for playlist in playlists.unwrap() {
+            println!(" {}", playlist);
+        }
+        println!("----------------------------------------");
+        println!("Write !playlist [playlist_name] to select playlist.");
+    }
     let mut input: String = String::new();
 
-    if let None = playlist {
-        print!("search (separated by commas) --> ");
-        std::io::stdout().flush().unwrap();
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Unexpected Error: Failed to read user input from terminal.");
-    } else {
-        // If there is some playlist to play, read it content and write it to the input for playing.
-        let playlist_content: Result<String, String> = playlist::read_playlist(&playlist.unwrap());
-        if playlist_content.is_err() {
-            error("Mpvy PlaylistCheck", "Playlist Content returned an Err value. Exiting with code 1 because nothing to play.");
-            println!("Playlist not found (or another error occured). Please check logs for more information.");
-            std::process::exit(1);
-        }
-        input = playlist_content.unwrap();
-    }
+    print!("search (separated by commas) --> ");
+    std::io::stdout().flush().unwrap();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Unexpected Error: Failed to read user input from terminal.");
 
     // If there is some playlist to save, write it to the file.
     if let Some(playlist_name) = save_playlist {
@@ -176,6 +176,21 @@ fn main() {
         info("Mpvy Main", "User input is empty. Exiting with code 0.");
         println!("An empty input given. Exiting with code 0.");
         std::process::exit(0);
+    }
+
+    if input.trim().starts_with("!playlist ") {
+        info(
+            "Mpvy Main",
+            "User prefixed input with '!playlist '. Resolving and playing playlist.",
+        );
+        let playlist: String = input.trim().replace("!playlist ", "");
+        let playlist_content: Result<String, String> = playlist::read_playlist(&playlist);
+        if playlist_content.is_err() {
+            error("Mpvy PlaylistCheck", "Playlist Content returned an Err value. Exiting with code 1 because nothing to play.");
+            println!("Playlist not found (or another error occured). Please check logs for more information.");
+            std::process::exit(1);
+        }
+        input = playlist_content.unwrap();
     }
 
     // Split querys with commas
@@ -210,6 +225,5 @@ fn main() {
         }
     }
 
-    info("Mpvy Main", "Reached end of file. Exiting with code 0.");
-    std::process::exit(0);
+    info("Mpvy Main", "Reached end of file.");
 }

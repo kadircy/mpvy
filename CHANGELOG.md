@@ -4,11 +4,13 @@
 ### Added
 - Implemented preloading the next audio while the current audio is playing.
 - Implemented a `build.sh` script for easy building of the `mpvy` project.
+- New feature: Now, **mpvy** shows playlists at startup.
 - Added new log messages to more detailed debugging.
 
 ### Changed
 - Updated log messages to enhance clarity and user understanding.
 - Updated `.expect` log messages to format: `Unexpected Error: message`. 
+- Updated the way of resolving playlists.
 
 ### Fixed
 - Removed unused imports in codebase.

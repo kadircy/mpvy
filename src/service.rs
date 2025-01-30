@@ -49,7 +49,10 @@ fn mpv(path: &str) -> Result<(), String> {
 /// Also uses some optimizations for better user experience.
 /// And logs informative messages
 pub fn play(title: &str, duration: u64) -> Result<yt_dlp::VideoInfo, String> {
-    info("Service Play", &format!("Trying to play audio with query: '{}'.", title));
+    info(
+        "Service Play",
+        &format!("Trying to play audio with query: '{}'.", title),
+    );
 
     let video_result: Result<yt_dlp::VideoInfo, String> = yt_dlp::get_info(title); // Get video information (such as duration, title, id)
     let video: VideoInfo = match video_result {
@@ -77,7 +80,10 @@ pub fn play(title: &str, duration: u64) -> Result<yt_dlp::VideoInfo, String> {
         // Wait for previous audio to end
         info("Service Play", "Waiting for previous audio to end.");
         sleep(seconds);
-        info("Service Play", &format!("Previous audio ended, now playing '{}'.", video.title));
+        info(
+            "Service Play",
+            &format!("Previous audio ended, now playing '{}'.", video.title),
+        );
         let result: Result<(), String> = mpv(&path);
         if result.is_err() {
             return Err(String::from(result.unwrap_err()));
