@@ -1,7 +1,5 @@
 # mpvy
 
-https://github.com/user-attachments/assets/7544f0a6-da32-43aa-b4da-0eb10c2a0d2dMPVY
-
 **MPVY** is an open-source, lightweight, and terminal-based YouTube audio player, developed using the power of Rust programming language. Designed to offer a fast and customizable listening experience, MPVY leverages the MPV media player to seamlessly stream YouTube content as audio, supporting a variety of media formats. Whether you're an audiophile or a user seeking minimalistic, efficient tools, MPVY provides a user-friendly solution for enjoying YouTube audio directly from the terminal.
 
 ## Key Features
