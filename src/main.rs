@@ -140,7 +140,7 @@ fn main() {
         std::io::stdout().flush().unwrap();
         io::stdin()
             .read_line(&mut input)
-            .expect("Failed to read user input from terminal");
+            .expect("Unexpected Error: Failed to read user input from terminal.");
     } else {
         // If there is some playlist to play, read it content and write it to the input for playing.
         let playlist_content: Result<String, String> = playlist::read_playlist(&playlist.unwrap());
@@ -185,7 +185,7 @@ fn main() {
         Some(
             Command::new("cava")
                 .spawn()
-                .expect("Failed to start 'cava' process"),
+                .expect("Unexpected Error: Failed to start 'cava' process. Maybe 'cava' is not installed?"),
         )
     } else {
         None

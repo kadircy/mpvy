@@ -8,6 +8,7 @@
 
 ### Changed
 - Updated log messages to enhance clarity and user understanding.
+- Updated `.expect` log messages to format: `Unexpected Error: message`. 
 
 ### Fixed
 - Removed unused imports in codebase.
