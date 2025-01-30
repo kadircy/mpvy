@@ -9,6 +9,7 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 use std::process::Command;
 use std::str::Split;
+use std::time::Duration;
 use std::{env, fs};
 
 /// Clear the console with some unicode char.
@@ -206,14 +207,29 @@ fn main() {
 
     let mut wait_duration: u64 = 0;
 
+    let mut index = 0;
     for title in titles {
         info(
             "Mpvy TitleLoop",
             &format!("Reached query in loop: '{}'.", title.trim()),
         );
-        let video_info = service::play(title.trim(), wait_duration).unwrap();
-        let duration_in_seconds = duration_to_seconds(&video_info.duration);
-        wait_duration = duration_in_seconds;
+        // If the audio is not the first one or,
+        // Play it without any modify.
+        if index != 0 {
+            let video_info = service::play(title.trim(), wait_duration).unwrap();
+            let duration_in_seconds = duration_to_seconds(&video_info.duration);
+            wait_duration = duration_in_seconds;
+            // Don't need to operate on 'index'. Just costs performance (don't care how small it is)
+            // index = index + 1;
+        } else {
+            // If the audio is the first one or there is just one audio,
+            // Also wait in the main thread because of `cava`
+            let video_info = service::play(title.trim(), wait_duration).unwrap();
+            let duration_in_seconds = duration_to_seconds(&video_info.duration);
+            std::thread::sleep(Duration::from_secs(duration_in_seconds));
+            wait_duration = duration_in_seconds;
+            index = index + 1;
+        }
     }
 
     // If there is a Cava process, kill it.
