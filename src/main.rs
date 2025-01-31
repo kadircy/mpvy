@@ -227,7 +227,6 @@ fn main() {
             let video_info = service::play(title.trim(), wait_duration).unwrap();
             let duration_in_seconds = duration_to_seconds(&video_info.duration);
             std::thread::sleep(Duration::from_secs(duration_in_seconds));
-            wait_duration = duration_in_seconds;
             index = index + 1;
         }
     }
