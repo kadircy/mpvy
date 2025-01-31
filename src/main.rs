@@ -195,7 +195,7 @@ fn main() {
     }
 
     // Split querys with commas
-    let titles: Split<'_, &str> = input.trim().split(",");
+    let mut titles: Split<'_, &str> = input.trim().split(",");
     let cava_process: Option<std::process::Child> = if cava_enabled {
         info("Mpvy Cava", "Cava is enabled. Starting child process.");
         Some(Command::new("cava").spawn().expect(
@@ -206,32 +206,44 @@ fn main() {
     };
 
     let mut wait_duration: u64 = 0;
-
     let mut index = 0;
-    for title in titles {
+    let mut is_single_music = false; // Tek müzik kontrolü için flag
+
+    // Split üzerinden iterasyon başlatıyoruz
+    for (i, title) in titles.clone().enumerate() {
+        // Eğer ilk müzikse, flag'i işaretle
+        if i == 0 && titles.clone().count() == 1 {
+            is_single_music = true;
+        }
+
         info(
             "Mpvy TitleLoop",
             &format!("Reached query in loop: '{}'.", title.trim()),
         );
-        // If the audio is not the first one or,
-        // Play it without any modify.
-        if index != 0 {
+
+        // Eğer tek müzikse ya da ilk müzikse, main thread üzerinde bekleme yap.
+        if is_single_music || index == 0 {
+            let video_info = service::play(title.trim(), wait_duration).unwrap();
+            let duration_in_seconds = duration_to_seconds(&video_info.duration);
+
+            if is_single_music {
+                // Tek müzikse, Cava işlemi için main thread'de bekleme yap.
+                std::thread::sleep(Duration::from_secs(duration_in_seconds));
+            } else {
+                // İlk müzikse, main thread'de bekleme yap, sonrasında devam et.
+                wait_duration = duration_in_seconds;
+            }
+        } else {
+            // Diğer müzikler için bekleme sürelerini düzenleyerek sırayla çal.
             let video_info = service::play(title.trim(), wait_duration).unwrap();
             let duration_in_seconds = duration_to_seconds(&video_info.duration);
             wait_duration = duration_in_seconds;
-            // Don't need to operate on 'index'. Just costs performance (don't care how small it is)
-            // index = index + 1;
-        } else {
-            // If the audio is the first one or there is just one audio,
-            // Also wait in the main thread because of `cava`
-            let video_info = service::play(title.trim(), wait_duration).unwrap();
-            let duration_in_seconds = duration_to_seconds(&video_info.duration);
-            std::thread::sleep(Duration::from_secs(duration_in_seconds));
-            index = index + 1;
         }
+
+        index += 1;
     }
 
-    // If there is a Cava process, kill it.
+    // Eğer bir Cava işlemi varsa, onu öldür.
     if let Some(mut cava) = cava_process {
         if let Err(e) = cava.kill() {
             error("Mpvy Cava", &format!("Failed to kill 'cava': {}", e));
