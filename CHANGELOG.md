@@ -14,6 +14,7 @@
 
 ### Fixed
 - Removed unused imports in codebase.
+- Fixed an bug where audio doesn't start on time because main thread waits two times to first audio end.
 
 ## [0.4.1] - 2025-01-29
 ### Changed
