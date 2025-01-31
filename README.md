@@ -39,7 +39,7 @@ Running `mpvy` without arguments will prompt you for an input, allowing you to e
 **mpvy** currently doesn't support built-in controls like play, pause, and others. However, you can manage audio playback **customly** using IPC. **mpvy** automatically sets the IPC socket path for the played audio to `$XDG_CONFIG_HOME/mpv/socket`. To control the audio in **mpvy** (mpv instances that running audios), simply interact with this IPC socket path.
 
 ## Playlist
-**mpvy** now supports local playlists, allowing you to play multiple audio tracks repeatedly without having to enter the query each time. To save a playlist, use the `--save-playlist <name>` argument and enter your video queries as usual. **mpvy** will store these queries in a file located at `$XDG_CONFIG_HOME/mpvy/playlist/<name>`. To play a saved playlist, simply use the `--playlist <name>` argument, and **mpvy** will handle playback seamlessly.
+**mpvy** now supports local playlists, allowing you to play multiple audio tracks repeatedly without having to enter the query each time. To save a playlist, use the `--save-playlist <name>` argument and enter your video queries as usual. **mpvy** will store these queries in a file located at `$XDG_CONFIG_HOME/mpvy/playlist/<name>`. To play a saved playlist, simply use the `!playlist` prefix and type your playlist name in query. Like this `!playlist example`, and **mpvy** will handle playback seamlessly.
 
 ## Cava
 **mpvy** has built-in support for displaying **cava** (a console-based audio visualizer) while playing audio. If you have **cava** installed on your system, you can use the `--cava` argument to automatically launch cava when the audio starts. Once all audio has finished playing, **cava** will be closed automatically.
