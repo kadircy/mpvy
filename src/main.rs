@@ -195,7 +195,7 @@ fn main() {
     }
 
     // Split querys with commas
-    let mut titles: Split<'_, &str> = input.trim().split(",");
+    let titles: Split<'_, &str> = input.trim().split(",");
     let cava_process: Option<std::process::Child> = if cava_enabled {
         info("Mpvy Cava", "Cava is enabled. Starting child process.");
         Some(Command::new("cava").spawn().expect(
