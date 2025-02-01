@@ -225,7 +225,7 @@ fn main() {
             let video_info = service::play(title.trim(), wait_duration).unwrap();
             let duration_in_seconds = duration_to_seconds(&video_info.duration);
 
-            if is_single_music {
+            if is_single_audio {
                 // If it is single audio, wait in main_thread because of Cava.
                 std::thread::sleep(Duration::from_secs(duration_in_seconds));
             } else {
