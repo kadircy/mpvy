@@ -1,6 +1,7 @@
 # Changelog
-
 ## [Unreleased]
+
+## [0.4.2]
 ### Added
 - Implemented preloading the next audio while the current audio is playing.
 - Implemented a `build.sh` script for easy building of the `mpvy` project.
