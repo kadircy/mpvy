@@ -207,13 +207,12 @@ fn main() {
 
     let mut wait_duration: u64 = 0;
     let mut index = 0;
-    let mut is_single_music = false; // Tek müzik kontrolü için flag
+    let mut is_audio_music = false; // Flag for single audio control.
 
-    // Split üzerinden iterasyon başlatıyoruz
     for (i, title) in titles.clone().enumerate() {
-        // Eğer ilk müzikse, flag'i işaretle
+        // If it is single audio, set flag as `true` 
         if i == 0 && titles.clone().count() == 1 {
-            is_single_music = true;
+            is_single_audio = true;
         }
 
         info(
@@ -221,20 +220,20 @@ fn main() {
             &format!("Reached query in loop: '{}'.", title.trim()),
         );
 
-        // Eğer tek müzikse ya da ilk müzikse, main thread üzerinde bekleme yap.
-        if is_single_music || index == 0 {
+        // If it is first audio or single audio
+        if is_single_audio || index == 0 {
             let video_info = service::play(title.trim(), wait_duration).unwrap();
             let duration_in_seconds = duration_to_seconds(&video_info.duration);
 
             if is_single_music {
-                // Tek müzikse, Cava işlemi için main thread'de bekleme yap.
+                // If it is single audio, wait in main_thread because of Cava.
                 std::thread::sleep(Duration::from_secs(duration_in_seconds));
             } else {
-                // İlk müzikse, main thread'de bekleme yap, sonrasında devam et.
+                // If it is first audio, wait in main_thread just for first audio. 
                 wait_duration = duration_in_seconds;
             }
         } else {
-            // Diğer müzikler için bekleme sürelerini düzenleyerek sırayla çal.
+            // Play other audios normally
             let video_info = service::play(title.trim(), wait_duration).unwrap();
             let duration_in_seconds = duration_to_seconds(&video_info.duration);
             wait_duration = duration_in_seconds;
@@ -243,7 +242,7 @@ fn main() {
         index += 1;
     }
 
-    // Eğer bir Cava işlemi varsa, onu öldür.
+    // If there is a Cava process, kill it.
     if let Some(mut cava) = cava_process {
         if let Err(e) = cava.kill() {
             error("Mpvy Cava", &format!("Failed to kill 'cava': {}", e));
