@@ -207,7 +207,7 @@ fn main() {
 
     let mut wait_duration: u64 = 0;
     let mut index = 0;
-    let mut is_audio_music = false; // Flag for single audio control.
+    let mut is_single_audio = false; // Flag for single audio control.
 
     for (i, title) in titles.clone().enumerate() {
         // If it is single audio, set flag as `true` 
